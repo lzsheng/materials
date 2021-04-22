@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Shell, ConfigProvider } from '@alifd/next';
 import PageNav from './components/PageNav';
 import GlobalSearch from './components/GlobalSearch';
@@ -36,6 +36,7 @@ interface IGetDevice {
   (width: number): 'phone' | 'tablet' | 'desktop';
 }
 export default function BasicLayout({
+  location,
   children,
 }: {
   children: React.ReactNode;
@@ -64,6 +65,13 @@ export default function BasicLayout({
       setDevice(getDevice(deviceWidth));
     });
   }
+
+  const childrenRef = useRef(children);
+
+  useEffect(() => {
+    console.info('路由改变时，children是否一致', location.pathname, childrenRef.current === children);
+    childrenRef.current = children;
+  }, [location.pathname]);
 
   return (
     <ConfigProvider device={device}>
